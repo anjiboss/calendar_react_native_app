@@ -1,0 +1,14 @@
+{
+  "type": "mongodb",
+  "synchronize": true,
+  "url": "mongodb+srv://root:01672548468@cluster0.nogan.mongodb.net/calendar_app?retryWrites=true&w=majority",
+  "logging": false,
+  "entities": ["dist/entity/**/*.js"],
+  "migrations": ["src/migration/**/*.ts"],
+  "subscribers": ["src/subscriber/**/*.ts"],
+  "cli": {
+    "entitiesDir": "src/entity",
+    "migrationsDir": "src/migration",
+    "subscribersDir": "src/subscriber"
+  }
+}
