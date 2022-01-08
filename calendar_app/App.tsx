@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Router from "./Router/Router";
 import Homescreen from "./Screen/Homescreen";
-import LeftScreen from "./Screen/LeftScreen";
+import UserScreen from "./Screen/UserScreen";
 import { GlobalContext } from "./types/context";
 
 export default function App() {
@@ -15,7 +15,7 @@ export default function App() {
       value={{ title: title, setTitle, username, setUsername, icons, setIcons }}
     >
       <View style={styles.container}>
-        <Router HomeScreen={Homescreen} LeftScreen={LeftScreen} />
+        <Router HomeScreen={Homescreen} LeftScreen={UserScreen} />
         <StatusBar style="auto" />
       </View>
     </GlobalContext.Provider>

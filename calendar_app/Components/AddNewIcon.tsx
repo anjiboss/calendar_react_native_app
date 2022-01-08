@@ -1,17 +1,30 @@
 import axios from "axios";
 import React, { useContext, useState } from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import { colors } from "../Constants/color";
 import { env } from "../Constants/env";
 import { GlobalContext } from "../types/context";
 import CButton from "./CButton";
 
-const AddNewIcon: React.FC = ({}) => {
+interface Props {
+  toggleMode: () => void;
+}
+
+const AddNewIcon: React.FC<Props> = ({ toggleMode }) => {
   const globalContext = useContext(GlobalContext);
+  const [loading, setLoading] = useState(false);
   const [newIcon, setNewIcon] = useState("");
   const [description, setDescription] = useState("");
+
   const handleSaveNewIcon = () => {
     if (newIcon.length > 1 && description.length > 1) {
+      setLoading(true);
       axios({
         url: `${env.API}/icon`,
         method: "POST",
@@ -21,8 +34,10 @@ const AddNewIcon: React.FC = ({}) => {
           description,
         },
       }).then(({ data }) => {
+        setLoading(false);
         if (data.success) {
           globalContext.setIcons((prev) => [...prev, data.icon]);
+          toggleMode();
         }
       });
     }
@@ -54,11 +69,15 @@ const AddNewIcon: React.FC = ({}) => {
         <View style={styles.buttonContainer}>
           <CButton
             customContainerStyle={{
-              backgroundColor: colors.underline,
+              backgroundColor: "#651fff",
             }}
             onPress={handleSaveNewIcon}
           >
-            Save
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={{ color: "#fff" }}>Save</Text>
+            )}
           </CButton>
         </View>
       </View>

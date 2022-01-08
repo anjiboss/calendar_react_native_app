@@ -31,7 +31,7 @@ const IconSetting: React.FC<IconSettingProps> = ({ visible, handleClose }) => {
     >
       <View style={styles.container}>
         {addMode ? (
-          <AddNewIcon />
+          <AddNewIcon toggleMode={() => setAddMode(!addMode)} />
         ) : (
           <View style={styles.cardContainer}>
             <ScrollView>

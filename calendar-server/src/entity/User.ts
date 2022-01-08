@@ -5,13 +5,15 @@ import {
   Column,
   BeforeInsert,
 } from "typeorm";
+import * as bcrypt from "bcryptjs";
 import { v4 } from "uuid";
 
 @Entity()
 export class User {
   @BeforeInsert()
-  add() {
+  async fix() {
     this.id = v4();
+    this.password = await bcrypt.hash(this.password, 10);
   }
 
   @ObjectIdColumn()
@@ -22,6 +24,9 @@ export class User {
 
   @Column()
   username: string;
+
+  @Column()
+  password: string;
 
   @Column({ nullable: true })
   firstName: string;

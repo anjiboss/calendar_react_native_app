@@ -1,16 +1,17 @@
 import express from "express";
 import { getRepository } from "typeorm";
 import { User } from "../entity/User";
+import * as bcrypt from "bcryptjs";
 const router = express.Router();
 
 router.post("/", async (req, res) => {
-  const { username, firstName, lastName } = req.body;
+  const { username, password, firstName, lastName } = req.body;
 
-  if (!username) {
+  if (!username || !password) {
     return res.json({
       success: false,
       error: {
-        message: "Provide Username please",
+        message: "Provide Username and Password please",
       },
     });
   }
@@ -33,6 +34,7 @@ router.post("/", async (req, res) => {
   newUser.firstName = firstName || "";
   newUser.lastName = lastName || "";
   newUser.username = username;
+  newUser.password = password;
 
   await getRepository(User).save(newUser);
 
@@ -42,8 +44,18 @@ router.post("/", async (req, res) => {
   });
 });
 
-router.get("/:username", async (req, res) => {
+router.post("/:username", async (req, res) => {
   const username = req.params.username;
+  const password = req.body.password;
+
+  if (!username || !password) {
+    return res.json({
+      success: false,
+      error: {
+        message: "Provide Username and Password please",
+      },
+    });
+  }
 
   const user = await getRepository(User).findOne({
     where: { username },
@@ -54,6 +66,18 @@ router.get("/:username", async (req, res) => {
       success: false,
       error: {
         message: "User not found",
+      },
+    });
+  }
+
+  // Check Password
+  const validPassword = await bcrypt.compare(password, user.password);
+
+  if (!validPassword) {
+    return res.json({
+      success: false,
+      error: {
+        message: "Invalid Password",
       },
     });
   }

@@ -53,28 +53,29 @@ const Calendar: React.FC = () => {
   }, [month, globalContext.username]);
 
   useEffect(() => {
-    if (globalContext.icons.length === 0 && globalContext.username) {
-      axios({
-        url: `${env.API}/icon/${globalContext.username}`,
-        method: "GET",
-      })
-        .then(({ data }) => {
-          if (data.success) {
-            globalContext.setIcons(data.icons);
-          } else {
-            Alert.alert(
-              "Error",
-              data.error.message,
-              [{ text: "Cancel", style: "cancel" }],
-              {
-                cancelable: true,
-              }
-            );
-          }
+    if (globalContext.username) {
+      if (globalContext.icons.length === 0)
+        axios({
+          url: `${env.API}/icon/${globalContext.username}`,
+          method: "GET",
         })
-        .catch(() => {
-          console.log("error");
-        });
+          .then(({ data }) => {
+            if (data.success) {
+              globalContext.setIcons(data.icons);
+            } else {
+              Alert.alert(
+                "Error",
+                data.error.message,
+                [{ text: "Cancel", style: "cancel" }],
+                {
+                  cancelable: true,
+                }
+              );
+            }
+          })
+          .catch(() => {
+            console.log("error");
+          });
     }
   }, [globalContext.icons, globalContext.username]);
 
