@@ -2,7 +2,7 @@ import axios from "axios";
 import React from "react";
 import { useContext } from "react";
 import { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { colors } from "../Constants/color";
 import { env } from "../Constants/env";
 import { GlobalContext } from "../types/context";
@@ -13,22 +13,32 @@ interface DayProps {
 }
 
 const Day: React.FC<DayProps> = ({ day }) => {
+  const [dayIcon, setDayIcon] = useState(day.icons);
   const [visible, setVisible] = useState(false);
   const globalContext = useContext(GlobalContext);
 
   const handleAddIconToDay = (icon: string) => {
-    console.log(icon);
+    setDayIcon((prev) => [...prev, icon]);
     axios({
       url: `${env.API}/day`,
       method: "POST",
       data: {
-        username: "anji",
+        username: globalContext.username,
         day: day.day,
         month: day.month,
         icon: icon,
       },
-    }).then((data) => {
-      console.log(data.data);
+    }).then(({ data }) => {
+      if (!data.success) {
+        Alert.alert(
+          "Error",
+          data.error.message,
+          [{ text: "Cancel", style: "cancel" }],
+          {
+            cancelable: true,
+          }
+        );
+      }
     });
   };
   return (
@@ -37,7 +47,7 @@ const Day: React.FC<DayProps> = ({ day }) => {
         <Text style={styles.text}>
           Day: {day.day}
           {"     "}
-          {day.icons.map((icon, i) => (
+          {dayIcon.map((icon, i) => (
             <Text key={`${i}`}>
               {icon} {"   "}
             </Text>

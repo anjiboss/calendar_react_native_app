@@ -1,1 +1,1 @@
-type Route = "HomeScreen" | "LeftScreen" | "RightScreen"; // Add All Route/Screen Here
+type Route = "HomeScreen" | "LeftScreen"; // Add All Route/Screen Here

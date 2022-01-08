@@ -1,3 +1,3 @@
 export const env = {
-  API: "http:/192.168.43.172:5000/api/v1",
+  API: "https://floating-depths-61070.herokuapp.com/api/v1",
 };

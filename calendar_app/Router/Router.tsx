@@ -7,14 +7,9 @@ import { RouterContext } from "./RouteContext";
 interface RouterProps {
   HomeScreen: React.FC<any>;
   LeftScreen: React.FC<any>;
-  RightScreen: React.FC<any>;
 }
 
-const Router: React.FC<RouterProps> = ({
-  HomeScreen,
-  LeftScreen,
-  RightScreen,
-}) => {
+const Router: React.FC<RouterProps> = ({ HomeScreen, LeftScreen }) => {
   const [route, setRoute] = useState<Route>("HomeScreen");
   const changeRoute = useCallback((route: Route) => {
     setRoute(route);
@@ -23,13 +18,7 @@ const Router: React.FC<RouterProps> = ({
     <RouterContext.Provider value={{ changeRoute, currentRoute: route }}>
       <View style={{ flex: 1 }}>
         <Layout>
-          {route === "RightScreen" ? (
-            <RightScreen />
-          ) : route === "LeftScreen" ? (
-            <LeftScreen />
-          ) : (
-            <HomeScreen />
-          )}
+          {route === "LeftScreen" ? <LeftScreen /> : <HomeScreen />}
         </Layout>
         <NavigationBar />
       </View>

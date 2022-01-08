@@ -9,6 +9,7 @@ const router = express.Router();
 //  --------------------------------------------------------   Add new Icon
 router.post("/", async (req, res) => {
   const { username, icon, description } = req.body;
+  console.log("new icon", { username, icon, description });
 
   const user = await getRepository(User).findOne({ where: { username } });
 
@@ -28,7 +29,7 @@ router.post("/", async (req, res) => {
 
   await getRepository(Icon).save(newIcon);
   return res.json({
-    succes: true,
+    success: true,
     icon: newIcon,
   });
 });
@@ -36,7 +37,7 @@ router.post("/", async (req, res) => {
 // ---------------------------------------------------------  Get Icon By Username
 router.get("/:username", async (req, res) => {
   const { username } = req.params;
-  console.log(username);
+  console.log("get icon by username", { username });
   const user = await getRepository(User).findOne({ where: { username } });
   if (!user) {
     return res.json({

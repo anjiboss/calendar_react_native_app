@@ -16,49 +16,50 @@ const Calendar: React.FC = () => {
   const [month, setMonth] = useState(new Date().getMonth());
   useEffect(() => {
     setLoading(true);
-    axios({
-      url: `${env.API}/day/month/${month}?username=anji`,
-      method: "GET",
-    })
-      .then(({ data }) => {
-        if (data.success) {
-          const _days: Day[] = data.days;
-          const tmp = new Array(
-            daysInMonth(month + 1, new Date().getFullYear())
-          ).fill(undefined);
-          const fixedDays = tmp.map((_, i) => {
-            const iconToday = _days.find((_d) => _d.day === i + 1);
-            if (!iconToday) {
-              return {
-                day: i + 1,
-                month: month,
-                icons: [] as string[],
-              };
-            } else {
-              return iconToday;
-            }
-          });
-          setDays(fixedDays);
-        } else {
-          console.log(data.error.message);
-        }
-        setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-        console.log("error");
-      });
-  }, [month, globalContext.username]);
-
-  useEffect(() => {
-    if (globalContext.icons.length === 0) {
+    if (globalContext.username) {
       axios({
-        url: `${env.API}/icon/${"anji"}`,
+        url: `${env.API}/day/month/${month}?username=${globalContext.username}`,
         method: "GET",
       })
         .then(({ data }) => {
           if (data.success) {
-            console.log(data);
+            const _days: Day[] = data.days;
+            const tmp = new Array(
+              daysInMonth(month + 1, new Date().getFullYear())
+            ).fill(undefined);
+            const fixedDays = tmp.map((_, i) => {
+              const iconToday = _days.find((_d) => _d.day === i + 1);
+              if (!iconToday) {
+                return {
+                  day: i + 1,
+                  month: month,
+                  icons: [] as string[],
+                };
+              } else {
+                return iconToday;
+              }
+            });
+            setDays(fixedDays);
+          } else {
+            console.log("43", data.error.message);
+          }
+          setLoading(false);
+        })
+        .catch(() => {
+          setLoading(false);
+          console.log("get day error");
+        });
+    }
+  }, [month, globalContext.username]);
+
+  useEffect(() => {
+    if (globalContext.icons.length === 0 && globalContext.username) {
+      axios({
+        url: `${env.API}/icon/${globalContext.username}`,
+        method: "GET",
+      })
+        .then(({ data }) => {
+          if (data.success) {
             globalContext.setIcons(data.icons);
           } else {
             Alert.alert(
@@ -75,7 +76,7 @@ const Calendar: React.FC = () => {
           console.log("error");
         });
     }
-  }, [globalContext.icons]);
+  }, [globalContext.icons, globalContext.username]);
 
   // --------------------------------------------------  Handler
   const hanldeChangeMonth = (newMonth: number) => {

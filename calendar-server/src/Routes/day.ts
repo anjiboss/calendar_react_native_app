@@ -76,6 +76,7 @@ router.post("/", async (req, res) => {
 router.get("/month/:month", async (req, res) => {
   const month = req.params.month;
   const username = req.query.username;
+  console.log("month", month, username);
 
   if (!username) {
     return res.json({
