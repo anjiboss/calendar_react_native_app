@@ -76,7 +76,7 @@ const Calendar: React.FC = () => {
           console.log("error");
         });
     }
-  }, [globalContext.icons, globalContext.username]);
+  }, [globalContext.username]);
 
   // --------------------------------------------------  Handler
   const hanldeChangeMonth = (newMonth: number) => {

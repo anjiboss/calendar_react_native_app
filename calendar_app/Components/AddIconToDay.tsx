@@ -31,23 +31,32 @@ const AddIconToDay: React.FC<AddIconToDayProps> = ({
       <View style={styles.scrollView}>
         <ScrollView>
           <View style={styles.container}>
-            {globalContext.icons.map((icon, i) => {
-              return (
-                <Card
-                  key={i}
-                  onPress={() => handleAddIconToDay(icon.icon)}
-                  style={{
-                    width: 140,
-                    backgroundColor: "#F2E6E6",
-                    height: 70,
-                    margin: 10,
-                  }}
-                >
-                  <Text>{icon.icon}</Text>
-                  <Text>{icon.description}</Text>
-                </Card>
-              );
-            })}
+            {globalContext.icons.length > 0 ? (
+              globalContext.icons.map((icon, i) => {
+                return (
+                  <Card
+                    key={i}
+                    onPress={() => handleAddIconToDay(icon.icon)}
+                    style={{
+                      width: 140,
+                      backgroundColor: "#F2E6E6",
+                      height: 70,
+                      margin: 10,
+                    }}
+                  >
+                    <Text>{icon.icon}</Text>
+                    <Text>{icon.description}</Text>
+                  </Card>
+                );
+              })
+            ) : (
+              <View style={{ alignItems: "center" }}>
+                <Text>
+                  It seem like you don{"'"}t have any icon setted yet! Let set
+                  some by clicking list icon on the top
+                </Text>
+              </View>
+            )}
           </View>
         </ScrollView>
       </View>
