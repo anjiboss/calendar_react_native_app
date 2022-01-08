@@ -1,14 +1,7 @@
 import React from "react";
 import { useContext } from "react";
-import {
-  Dimensions,
-  Modal,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
+import Modal from "react-native-modal";
+import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
 import { GlobalContext } from "../types/context";
 import Card from "./Card";
 
@@ -27,36 +20,36 @@ const AddIconToDay: React.FC<AddIconToDayProps> = ({
 
   return (
     <Modal
-      visible={visible}
-      animationType="slide"
-      transparent
-      onRequestClose={handleCloseModal}
+      style={{ margin: 0 }}
+      isVisible={visible}
+      onBackButtonPress={handleCloseModal}
+      hasBackdrop
+      backdropOpacity={0}
+      onBackdropPress={handleCloseModal}
     >
-      <TouchableWithoutFeedback onPress={handleCloseModal}>
-        <View style={styles.scrollView}>
-          <ScrollView>
-            <View style={styles.container}>
-              {globalContext.icons.map((icon, i) => {
-                return (
-                  <Card
-                    key={i}
-                    onPress={() => handleAddIconToDay(icon.icon)}
-                    style={{
-                      width: 150,
-                      backgroundColor: "#F2E6E6",
-                      height: 70,
-                      margin: 10,
-                    }}
-                  >
-                    <Text>{icon.icon}</Text>
-                    <Text>{icon.description}</Text>
-                  </Card>
-                );
-              })}
-            </View>
-          </ScrollView>
-        </View>
-      </TouchableWithoutFeedback>
+      <View style={styles.scrollView}>
+        <ScrollView>
+          <View style={styles.container}>
+            {globalContext.icons.map((icon, i) => {
+              return (
+                <Card
+                  key={i}
+                  onPress={() => handleAddIconToDay(icon.icon)}
+                  style={{
+                    width: 140,
+                    backgroundColor: "#F2E6E6",
+                    height: 70,
+                    margin: 10,
+                  }}
+                >
+                  <Text>{icon.icon}</Text>
+                  <Text>{icon.description}</Text>
+                </Card>
+              );
+            })}
+          </View>
+        </ScrollView>
+      </View>
     </Modal>
   );
 };
@@ -77,5 +70,14 @@ const styles = StyleSheet.create({
     height: 300,
     marginTop: Dimensions.get("window").height - 300,
     paddingVertical: 20,
+
+    shadowColor: "black",
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowRadius: 6,
+    shadowOpacity: 1,
+    elevation: 5,
   },
 });

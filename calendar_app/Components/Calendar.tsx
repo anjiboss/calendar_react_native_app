@@ -54,28 +54,27 @@ const Calendar: React.FC = () => {
 
   useEffect(() => {
     if (globalContext.username) {
-      if (globalContext.icons.length === 0)
-        axios({
-          url: `${env.API}/icon/${globalContext.username}`,
-          method: "GET",
+      axios({
+        url: `${env.API}/icon/${globalContext.username}`,
+        method: "GET",
+      })
+        .then(({ data }) => {
+          if (data.success) {
+            globalContext.setIcons(data.icons);
+          } else {
+            Alert.alert(
+              "Error",
+              data.error.message,
+              [{ text: "Cancel", style: "cancel" }],
+              {
+                cancelable: true,
+              }
+            );
+          }
         })
-          .then(({ data }) => {
-            if (data.success) {
-              globalContext.setIcons(data.icons);
-            } else {
-              Alert.alert(
-                "Error",
-                data.error.message,
-                [{ text: "Cancel", style: "cancel" }],
-                {
-                  cancelable: true,
-                }
-              );
-            }
-          })
-          .catch(() => {
-            console.log("error");
-          });
+        .catch(() => {
+          console.log("error");
+        });
     }
   }, [globalContext.icons, globalContext.username]);
 
