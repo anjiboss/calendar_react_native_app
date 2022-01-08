@@ -26,6 +26,7 @@ const AddIconToDay: React.FC<AddIconToDayProps> = ({
       hasBackdrop
       backdropOpacity={0}
       onBackdropPress={handleCloseModal}
+      useNativeDriver
     >
       <View style={styles.scrollView}>
         <ScrollView>

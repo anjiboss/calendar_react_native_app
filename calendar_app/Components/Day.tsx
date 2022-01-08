@@ -83,10 +83,10 @@ const styles = StyleSheet.create({
     elevation: 17,
   },
   text: {
-    color: colors.brightText,
-    fontSize: 25,
+    color: "#3159A7",
+    fontSize: 20,
     textShadowColor: "rgba(0, 0, 0, 0.55)",
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0.5 },
+    textShadowRadius: 1,
   },
 });
