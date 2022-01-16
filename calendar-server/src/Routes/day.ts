@@ -3,8 +3,11 @@ import { getMongoRepository } from "typeorm";
 import { Day } from "../entity/Day";
 import { Icon } from "../entity/Icon";
 import { User } from "../entity/User";
+
+// ANCHOR API: /api/v1/day
 const router = express.Router();
 
+// ANCHOR Add Icon to day
 /**
  * @body icon: {string} add icon to the day
  * @body username: {string} username
@@ -19,6 +22,12 @@ router.post("/", async (req, res) => {
     day,
     month,
   });
+
+  if (!icon || !username || day === undefined || month === undefined) {
+    return res.json({
+      error: "Missing fields",
+    });
+  }
   const user = await getMongoRepository(User).findOne({
     where: { username },
   });
@@ -72,6 +81,7 @@ router.post("/", async (req, res) => {
 /**
  * @params month: The Month Index (start at 0)
  * @query username: The username of the user
+ * ANCHOR Get Days Of A Month
  */
 router.get("/month/:month", async (req, res) => {
   const month = req.params.month;
@@ -100,10 +110,6 @@ router.get("/month/:month", async (req, res) => {
     });
   }
 
-  console.log({
-    month,
-    userId: user.id,
-  });
   const days = await getMongoRepository(Day).find({
     where: {
       month: Number(month),
@@ -114,6 +120,70 @@ router.get("/month/:month", async (req, res) => {
   return res.json({
     success: true,
     days,
+  });
+});
+
+// ANCHOR Delete Icon from day
+router.delete("/:day", async (req, res) => {
+  const _day = req.params.day;
+  const { username, month, icon } = req.body;
+  console.log({
+    _day,
+    username,
+    month,
+    icon,
+  });
+
+  // Check user
+  const user = await getMongoRepository(User).findOne({
+    where: { username },
+  });
+
+  if (!user) {
+    return res.json({
+      success: false,
+      error: {
+        message: "User not found",
+      },
+    });
+  }
+
+  // Find Day
+  const day = await getMongoRepository(Day).findOne({
+    where: { day: Number(_day), userId: user.id, month: month },
+  });
+
+  console.log(day);
+
+  if (!day) {
+    return res.json({
+      success: false,
+      error: {
+        message: "Day not found",
+      },
+    });
+  }
+
+  // Check if Icon in day
+  if (!day.icons.includes(icon)) {
+    return res.json({
+      success: false,
+      error: {
+        message: "Icon not in day",
+      },
+    });
+  }
+
+  // Remove 1 Icon from Day
+  const clearIcon = day.icons.filter((i) => i !== icon);
+  const onlyThatIcon = day.icons.filter((i) => i === icon);
+  day.icons = [...clearIcon, ...new Array(onlyThatIcon.length - 1).fill(icon)];
+
+  await getMongoRepository(Day).save(day);
+
+  return res.json({
+    success: true,
+    day,
   });
 });
 

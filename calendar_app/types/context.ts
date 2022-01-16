@@ -19,3 +19,9 @@ const GlobalContext = createContext<IGlobalContext>({
 });
 
 export { IGlobalContext, GlobalContext };
+
+export const CalendarContext = createContext<{
+  updateDays: (day: Day) => void;
+}>({
+  updateDays: () => {},
+});

@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useContext, useState } from "react";
 import {
   Text,
@@ -5,9 +6,11 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from "react-native";
 import { Icon } from "react-native-elements/dist/icons/Icon";
 import Modal from "react-native-modal";
+import { env } from "../Constants/env";
 import { GlobalContext } from "../types/context";
 import AddNewIcon from "./AddNewIcon";
 import Card from "./Card";
@@ -20,6 +23,37 @@ interface IconSettingProps {
 const IconSetting: React.FC<IconSettingProps> = ({ visible, handleClose }) => {
   const globalContext = useContext(GlobalContext);
   const [addMode, setAddMode] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const handleDelUserIcon = (icon: Icon) => {
+    setLoading(true);
+    axios({
+      url: `${env.API}/icon/${icon.id}`,
+      method: "delete",
+      data: {
+        username: globalContext.username,
+      },
+    })
+      .then(({ data }) => {
+        setLoading(false);
+        if (data.success) {
+          globalContext.setIcons((prev) => {
+            return prev.filter((i) => i.id !== data.icon.id);
+          });
+        } else {
+          Alert.alert(
+            "Error",
+            data.error.message,
+            [{ text: "Cancel", style: "cancel" }],
+            {
+              cancelable: true,
+            }
+          );
+        }
+      })
+      .catch(() => {
+        console.trace("error while deleting user icon");
+      });
+  };
   return (
     <Modal
       isVisible={visible}
@@ -36,11 +70,23 @@ const IconSetting: React.FC<IconSettingProps> = ({ visible, handleClose }) => {
           <View style={styles.cardContainer}>
             <ScrollView>
               <View style={styles.scrollview}>
+                <Text
+                  style={{
+                    fontSize: 10,
+                    fontStyle: "italic",
+                    textAlign: "center",
+                  }}
+                >
+                  Hold Press the icon to delete it from this day
+                </Text>
                 {globalContext.icons.map((icon, i) => {
                   return (
                     <Card
+                      loading={loading}
                       key={i}
                       onPress={() => {}}
+                      onLongPress={() => handleDelUserIcon(icon)}
+                      delayLongPress={500}
                       style={{
                         backgroundColor: "#F2E6E6",
                         height: 70,

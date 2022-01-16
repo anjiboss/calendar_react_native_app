@@ -1,21 +1,47 @@
 import React from "react";
 import {
+  ActivityIndicator,
   StyleProp,
   StyleSheet,
   TouchableOpacity,
   View,
   ViewStyle,
 } from "react-native";
+import { colors } from "../Constants/color";
 
 interface Props {
   style?: StyleProp<ViewStyle>;
-  onPress: (any: any) => void;
+  onPress?: (any: any) => void;
+  onLongPress?: () => void;
+  delayLongPress?: number;
+  loading?: boolean;
 }
-const Card: React.FC<Props> = ({ children, style, onPress }) => {
+const Card: React.FC<Props> = ({
+  children,
+  style,
+  onPress,
+  onLongPress,
+  delayLongPress,
+  loading,
+}) => {
   return (
     <View>
-      <TouchableOpacity onPress={onPress}>
-        <View style={[styles.card, style]}>{children}</View>
+      <TouchableOpacity
+        onPress={onPress}
+        onLongPress={onLongPress}
+        delayLongPress={delayLongPress || 100}
+      >
+        <View style={[styles.card, style]}>
+          {loading !== undefined ? (
+            loading === true ? (
+              <ActivityIndicator color={colors.primaryColor} />
+            ) : (
+              children
+            )
+          ) : (
+            children
+          )}
+        </View>
       </TouchableOpacity>
     </View>
   );

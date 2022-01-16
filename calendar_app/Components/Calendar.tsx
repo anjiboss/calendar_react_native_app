@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { ActivityIndicator, Alert, StyleSheet, View } from "react-native";
 import { env } from "../Constants/env";
-import { GlobalContext } from "../types/context";
+import { CalendarContext, GlobalContext } from "../types/context";
 import { daysInMonth } from "../utils/__";
 import DaysData from "./DaysData";
 import MonthNav from "./MonthNav";
@@ -83,23 +83,36 @@ const Calendar: React.FC = () => {
     setMonth(newMonth);
   };
 
+  const updateDays = (day: Day) => {
+    setDays((prev) => {
+      const update = prev.filter((d) => d.day !== day.day);
+      return [...update, day].sort((a, b) => a.day - b.day);
+    });
+  };
+
   return (
-    <View style={{ flex: 1 }}>
-      <View style={styles.viewContainer}>
-        <View style={styles.monthContainer}>
-          {/* --------------------------------------- Change Month and Icon Setting */}
-          <MonthNav month={month} handleChangeMonth={hanldeChangeMonth} />
-        </View>
-        {loading ? (
-          <ActivityIndicator color="green" />
-        ) : (
-          <View style={styles.dayContainer}>
-            {/* ---------------------------------------- Days Log */}
-            <DaysData days={days} />
+    <CalendarContext.Provider
+      value={{
+        updateDays,
+      }}
+    >
+      <View style={{ flex: 1 }}>
+        <View style={styles.viewContainer}>
+          <View style={styles.monthContainer}>
+            {/* --------------------------------------- Change Month and Icon Setting */}
+            <MonthNav month={month} handleChangeMonth={hanldeChangeMonth} />
           </View>
-        )}
+          {loading ? (
+            <ActivityIndicator color="green" />
+          ) : (
+            <View style={styles.dayContainer}>
+              {/* ---------------------------------------- Days Log */}
+              <DaysData days={days} />
+            </View>
+          )}
+        </View>
       </View>
-    </View>
+    </CalendarContext.Provider>
   );
 };
 

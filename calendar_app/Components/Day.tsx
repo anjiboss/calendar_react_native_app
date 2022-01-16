@@ -1,5 +1,5 @@
 import axios from "axios";
-import React from "react";
+import React, { useEffect } from "react";
 import { useContext } from "react";
 import { useState } from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -18,6 +18,10 @@ const Day: React.FC<DayProps> = ({ day }) => {
   const [visible, setShowAddIcon] = useState(false);
   const globalContext = useContext(GlobalContext);
   const [dayInfo, setDayInfo] = useState(false);
+
+  useEffect(() => {
+    setDayIcon(day.icons);
+  }, [day.icons]);
 
   const handleAddIconToDay = (icon: string) => {
     setDayIcon((prev) => [...prev, icon]);
@@ -68,7 +72,12 @@ const Day: React.FC<DayProps> = ({ day }) => {
       <DayInfoView
         isVisible={dayInfo}
         day={day}
+        icons={dayIcon}
         handleCloseModal={() => setDayInfo(false)}
+        updateDay={(newIcons) => {
+          console.log({ newIcons });
+          setDayIcon(newIcons);
+        }}
       />
     </TouchableOpacity>
   );
