@@ -7,6 +7,7 @@ import { colors } from "../Constants/color";
 import { env } from "../Constants/env";
 import { GlobalContext } from "../types/context";
 import AddIconToDay from "./AddIconToDay";
+import DayInfoView from "./DayInfoView";
 
 interface DayProps {
   day: Day;
@@ -14,8 +15,9 @@ interface DayProps {
 
 const Day: React.FC<DayProps> = ({ day }) => {
   const [dayIcon, setDayIcon] = useState(day.icons);
-  const [visible, setVisible] = useState(false);
+  const [visible, setShowAddIcon] = useState(false);
   const globalContext = useContext(GlobalContext);
+  const [dayInfo, setDayInfo] = useState(false);
 
   const handleAddIconToDay = (icon: string) => {
     setDayIcon((prev) => [...prev, icon]);
@@ -42,7 +44,11 @@ const Day: React.FC<DayProps> = ({ day }) => {
     });
   };
   return (
-    <TouchableOpacity onPress={() => setVisible(true)}>
+    <TouchableOpacity
+      onPress={() => setShowAddIcon(true)}
+      onLongPress={() => setDayInfo(true)}
+      delayLongPress={300}
+    >
       <View style={styles.container}>
         <Text style={styles.text}>
           Day: {day.day}
@@ -57,7 +63,12 @@ const Day: React.FC<DayProps> = ({ day }) => {
       <AddIconToDay
         visible={visible}
         handleAddIconToDay={handleAddIconToDay}
-        handleCloseModal={() => setVisible(false)}
+        handleCloseModal={() => setShowAddIcon(false)}
+      />
+      <DayInfoView
+        isVisible={dayInfo}
+        day={day}
+        handleCloseModal={() => setDayInfo(false)}
       />
     </TouchableOpacity>
   );
